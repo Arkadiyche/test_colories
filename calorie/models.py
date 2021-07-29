@@ -35,15 +35,15 @@ class Dish(models.Model):
 
 class PersonActivity(models.Model):
     id = models.AutoField(primary_key=True)
-    person = models.ForeignKey('Person', on_delete=models.DO_NOTHING)
-    activity = models.ForeignKey('Activity', on_delete=models.DO_NOTHING)
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+    activity = models.ForeignKey('Activity', on_delete=models.CASCADE)
     date = models.DateTimeField(verbose_name='Время активности')
     duration = models.IntegerField(verbose_name='Продолжительность активности')
 
 class PersonDish(models.Model):
     id = models.AutoField(primary_key=True)
-    person = models.ForeignKey('Person', on_delete=models.DO_NOTHING)
-    dish = models.ForeignKey('Dish', on_delete=models.DO_NOTHING)
+    person = models.ForeignKey('Person', on_delete=models.CASCADE)
+    dish = models.ForeignKey('Dish', on_delete=models.CASCADE)
     date = models.DateTimeField(verbose_name='Время еды')
     amount = models.IntegerField(verbose_name='Кол-во порций')
 
