@@ -16,9 +16,9 @@ class Person(models.Model):
 
 class Activity(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(verbose_name='Название активности', max_length=150)
-    calorie_content = models.IntegerField(verbose_name='Удельная калорийность')
-    unit = models.CharField(verbose_name='Единица измерения', max_length=150)
+    name = models.CharField(verbose_name='Название активности', max_length=150, blank=True)
+    calorie_content = models.IntegerField(verbose_name='Удельная калорийность', blank=True)
+    unit = models.CharField(verbose_name='Единица измерения', max_length=150, blank=True)
 
     def __str__(self):
         return f'[{self.id}] {self.name} {self.calorie_content}Ккал за {self.unit}'
@@ -26,9 +26,9 @@ class Activity(models.Model):
 
 class Dish(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(verbose_name='Название блюда', max_length=150)
-    calorie_content = models.IntegerField(verbose_name='Удельная калорийность')
-    serving_weight = models.IntegerField(verbose_name='Масса по умольчанию в граммах')
+    name = models.CharField(verbose_name='Название блюда', max_length=150, blank=True)
+    calorie_content = models.IntegerField(verbose_name='Удельная калорийность', blank=True)
+    serving_weight = models.IntegerField(verbose_name='Масса по умольчанию в граммах', blank=True)
 
     def __str__(self):
         return f'[{self.id}] {self.name} {self.calorie_content}Ккал в {self.serving_weight}'

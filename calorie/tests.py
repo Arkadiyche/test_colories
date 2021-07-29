@@ -103,6 +103,7 @@ class ActionActivityTestCase(APITestCase):
 class ActionTestCase(APITestCase):
     data_activity = {"id": 1, "name": "Beg", "calorie_content": 200, "unit":'Км'}
     data_dish = {"id": 1, "name": "яйцо", "calorie_content": 200, "serving_weight": 100}
+    duration = 2
     def setUp(self):
         self.activity = Activity.objects.create(**self.data_activity)
         #self.activity=1
@@ -111,7 +112,7 @@ class ActionTestCase(APITestCase):
         self.dish.save()
         self.person = Person.objects.create(surname="A", first_name="b", patronymic="C", height=200, weight=100, age=20)
         self.person.save()
-        self.action_activity = PersonActivity.objects.create(person=self.person, activity=self.activity, date="2021-01-10T21:34", duration=2)
+        self.action_activity = PersonActivity.objects.create(person=self.person, activity=self.activity, date="2021-01-10T21:34", duration=self.duration)
         self.action_activity.save()
 
     def test_get_stats(self):
@@ -123,5 +124,17 @@ class ActionTestCase(APITestCase):
                                                                 "end": "2021-01-12T21:34"
                                                             }})
         status_code = response.status_code 
+        self.assertEqual(status_code, status.HTTP_200_OK)
+
+    def test_get_calories(self):
+        """get calories by person"""
+        response = self.client.post('/api/calories/', format='json', data={
+                                                            "person_id": 1,
+                                                            "period": {
+                                                                "start": "2021-01-07T21:34",
+                                                                "end": "2021-01-12T21:34"
+                                                            }})
+        status_code = response.status_code
         print(response.json())
+        self.assertEqual(response.json()['spent'], self.duration*self.data_activity['calorie_content'])
         self.assertEqual(status_code, status.HTTP_200_OK)

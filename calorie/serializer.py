@@ -25,3 +25,29 @@ class PersonDishSerializer(serializers.ModelSerializer):
     class Meta:
         model=PersonDish
         fields='__all__'
+
+class ActivitiesListField(serializers.ListField):
+    child = ActivitySerializer()
+
+
+class ActivitiesListSerializer(serializers.Serializer):
+    total = serializers.IntegerField()
+    activities = ActivitiesListField()
+
+class DishesListField(serializers.ListField):
+    child = DishSerializer()
+
+
+class DishesListSerializer(serializers.Serializer):
+    total = serializers.IntegerField()
+    dishes = DishesListField()
+
+class PeriodSerializer(serializers.Serializer):
+    start = serializers.DateTimeField()
+    end = serializers.DateTimeField()
+
+class RequestStatsSerializer(serializers.Serializer):
+    person_id = serializers.IntegerField()
+    period = PeriodSerializer()
+
+

@@ -10,4 +10,5 @@ urlpatterns = [
     path('action/activity/', views.ActivityActionView.as_view()),
     path('action/dish/', views.DishActionView.as_view()),
     path('stat/', views.get_stats, name='get_stats'),
+    path('calories/', views.get_person_calories, name='get_person_calories'),
 ]
