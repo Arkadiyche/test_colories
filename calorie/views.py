@@ -1,6 +1,7 @@
 from django.shortcuts import render
+from rest_framework import status
 from rest_framework.decorators import api_view
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView
 from calorie.models import Activity, Dish, Person, PersonActivity, PersonDish
 from calorie.serializer import ActivitySerializer, DishSerializer, PersonActivitySerializer, PersonDishSerializer
@@ -16,6 +17,17 @@ def index(request):
 
 
 class ActivityView(APIView):
+    @classmethod
+    def get_activity_by_id(self, id):
+        """
+        Returns the competition by its id or raises 404
+        """
+        try:
+            return Activity.objects.get(id=id)
+        except ObjectDoesNotExist:
+            raise ValidationError('Could not retrieve activity with specified id')
+
+
     def get(self, request):
         """Get information about activity by name
         :name (str, query)
@@ -43,9 +55,48 @@ class ActivityView(APIView):
         if activity.is_valid(raise_exception=True):
             activity.save()
             return JsonResponse(activity.data, safe=False)
+    
+    def put(self, request):
+        """update activity by id
+        :id (int)
+        :name (str)
+        :calorie_content (int)
+        :unit (str)
+        """
+        try:
+            id = request.data.get('id')
+        except ValueError:
+            raise ValidationError('expected "id"')
+        activity=self.get_activity_by_id(id)
+        serializer=ActivitySerializer(activity, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, safe=False)
 
+    def delete(self, request):
+        """delete activity by id
+        :id (int)
+        """
+        try:
+            id = request.data.get('id')
+        except ValueError:
+            raise ValidationError('expected "id"')
+        activity=self.get_activity_by_id(id)
+        activity.delete()
+        return HttpResponse(status=status.HTTP_200_OK)
+        
 
 class DishView(APIView):
+    @classmethod
+    def get_dish_by_id(self, id):
+        """
+        Returns the competition by its id or raises 404
+        """
+        try:
+            return Dish.objects.get(id=id)
+        except ObjectDoesNotExist:
+            raise ValidationError('Could not retrieve dish with specified id')
+
     def get(self, request):
         """Get information about dish by name
         :name (str, query)
@@ -72,6 +123,35 @@ class DishView(APIView):
         if dish.is_valid(raise_exception=True):
             dish.save()
             return JsonResponse(dish.data, safe=False)
+
+    def put(self, request):
+        """update activity by id
+        :id (int)
+        :name (str)
+        :calorie_content (int)
+        :serving_weight (str)
+        """
+        try:
+            id = request.data.get('id')
+        except ValueError:
+            raise ValidationError('expected "id"')
+        dish=self.get_dish_by_id(id)
+        serializer=DishSerializer(dish, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return JsonResponse(serializer.data, safe=False)
+
+    def delete(self, request):
+        """delete activity by id
+        :id (int)
+        """
+        try:
+            id = request.data.get('id')
+        except ValueError:
+            raise ValidationError('expected "id"')
+        dish=self.get_dish_by_id(id)
+        dish.delete()
+        return HttpResponse(status=status.HTTP_200_OK)
 
 
 class ActivityActionView(APIView):
