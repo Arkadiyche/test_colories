@@ -138,3 +138,16 @@ class ActionTestCase(APITestCase):
         print(response.json())
         self.assertEqual(response.json()['spent'], self.duration*self.data_activity['calorie_content'])
         self.assertEqual(status_code, status.HTTP_200_OK)
+
+    def test_create_person(self):
+        """create person"""
+        response = self.client.post('/api/person/', format='json', data={
+                                    "surname": "string",
+                                    "first_name": "string",
+                                    "patronymic": "string",
+                                    "height": 0,
+                                    "weight": 0,
+                                    "age": 0
+                                    })
+        status_code = response.status_code 
+        self.assertEqual(status_code, status.HTTP_200_OK)

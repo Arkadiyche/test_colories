@@ -4,7 +4,7 @@ from rest_framework.decorators import api_view
 from django.http import JsonResponse, HttpResponse
 from rest_framework.views import APIView
 from calorie.models import Activity, Dish, Person, PersonActivity, PersonDish
-from calorie.serializer import ActivitySerializer, DishSerializer, PersonActivitySerializer, PersonDishSerializer, ActivitiesListSerializer, DishesListSerializer, RequestStatsSerializer
+from calorie.serializer import ActivitySerializer, DishSerializer, PersonActivitySerializer, PersonDishSerializer, ActivitiesListSerializer, DishesListSerializer, RequestStatsSerializer, PersonSerializer
 from rest_framework.exceptions import ValidationError
 from django.core.exceptions import ObjectDoesNotExist
 import dateutil.parser
@@ -348,3 +348,16 @@ def get_person_calories(request):
             "spent": total_calories_spent,
             "diff": total_calories_received-total_calories_spent,
         })
+
+
+@swagger_auto_schema(method='post', request_body=PersonSerializer, responses={
+        status.HTTP_200_OK: PersonSerializer,
+        status.HTTP_400_BAD_REQUEST: 'Bad Request'}, operation_description='create person')
+@api_view(['POST'])
+def create_person(request):
+
+    person = PersonSerializer(data=request.data)
+
+    if person.is_valid(raise_exception=True):
+        person.save()
+        return JsonResponse(person.data, safe=False)
